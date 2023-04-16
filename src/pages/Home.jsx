@@ -28,9 +28,9 @@ function Home() {
                     removeCookie("jwt")
                     navigate("/login")
                 } else {
-                    // toast("Logined in successfully", {
-                    //     position: 'top-right'
-                    // })
+                    toast("Logined in successfully", {
+                        position: 'top-right'
+                    })
                 }
             }
         }
