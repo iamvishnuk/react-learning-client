@@ -13,6 +13,7 @@ function AdminHome() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [cookies, removeCookie] = useCookies([])
+    const [query, setQuery] = useState("")
 
     useEffect(() => {
 
@@ -27,25 +28,34 @@ function AdminHome() {
                 if (!data.status) {
                     removeCookie("adminjwt")
                     navigate("/admin/login")
-                } else {
-
                 }
             }
 
         }
         verifyAdmin()
 
+    }, [cookies, navigate, removeCookie])
+
+    useEffect(() => {
         axios.get("http://localhost:4000/getallusers").then((response) => {
             setUsers(response.data.data)
         }).catch((err) => {
             console.log(err)
         })
+    },[])
 
-    }, [cookies, navigate, removeCookie])
-
-    const deleteUser = (id) => {
+    const deleteUser = async (id) => {
         console.log(id)
-    } 
+        axios.post(`http://localhost:4000/admin/delete-user/${id}`,
+            {},
+            { withCredentials: true }
+        ).then((res) => {
+            console.log(res)
+            if (res.data.deleted) {
+                setUsers(users.filter(user => user._id !== id))
+            }
+        })
+    }
 
     const logOut = () => {
         removeCookie("adminjwt")
@@ -82,7 +92,12 @@ function AdminHome() {
                         </li> */}
                     </ul>
                     <form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+                        <input
+                            class="form-control mr-sm-2"
+                            type="search" placeholder="Search"
+                            aria-label="Search"
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
                         <button onClick={() => navigate('/admin/adduser')} class="btn btn-outline-success my-2 my-sm-0" type="submit">Add User</button>
                         <button onClick={logOut} class="btn btn-outline-success my-2 my-sm-0" type="submit">Logout</button>
                     </form>
@@ -100,7 +115,9 @@ function AdminHome() {
                     </thead>
                     <tbody>
                         {
-                            users.map((user, index) => {
+                            users.filter((user) => 
+                            user.email.toLowerCase().includes(query))
+                            .map((user, index) => {
                                 // console.log(user.email);
                                 return (
                                     <tr key={index}>
@@ -119,7 +136,7 @@ function AdminHome() {
                                             <button
                                                 className='btn btn-danger'
                                                 style={{ margin: "5px" }}
-                                                onClick={deleteUser(user._id)}
+                                                onClick={() => deleteUser(user._id)}
                                             >DELETE</button>
                                         </td>
                                     </tr>

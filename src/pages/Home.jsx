@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCookies } from "react-cookie"
 import axios from 'axios'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import { useSelector } from 'react-redux'
 
 
@@ -28,9 +28,9 @@ function Home() {
                     removeCookie("jwt")
                     navigate("/login")
                 } else {
-                    toast("Logined in successfully", {
-                        position: 'top-right'
-                    })
+                    // toast("Logined in successfully", {
+                    //     position: 'top-right'
+                    // })
                 }
             }
         }

@@ -8,7 +8,7 @@ import { changeUserDetails } from '../Redux/User/UserSlice'
 function Profile() {
 
     const [image12, setImage] = useState('')
-    const { name,userId,image } = useSelector(state => state.user)
+    const { name, userId, image } = useSelector(state => state.user)
     console.log(image)
     const dispatch = useDispatch()
 
@@ -17,7 +17,7 @@ function Profile() {
 
         const formData = new FormData()
         formData.append('image', image12)
-        formData.append("userId",userId)
+        formData.append("userId", userId)
 
         const config = {
             header: {
@@ -29,7 +29,7 @@ function Profile() {
 
         try {
             const { data } = await axios.post("http://localhost:4000/profile", formData, config)
-            dispatch(changeUserDetails({image:data.imageUrl}))
+            dispatch(changeUserDetails({ image: data.imageUrl, name, userId }))
         } catch (error) {
             console.log(error)
         }
